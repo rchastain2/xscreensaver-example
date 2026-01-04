@@ -55,11 +55,14 @@ int seconds()
 
 void draw(cairo_t *cr, float x, float y)
 {
+  cairo_push_group(cr);
   cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
   cairo_paint(cr);
   cairo_arc(cr, x, y, BALL_RADIUS, 0, 2 * M_PI);
   cairo_set_source_rgb(cr, 0.165, 0.322, 0.745);
   cairo_fill(cr);
+  cairo_pop_group_to_source(cr);
+  cairo_paint(cr);
 }
 
 void update(float *x, float *y, float *dx, float *dy, float dt, int width, int height)
@@ -159,18 +162,15 @@ int main(int argc, char *argv[])
     current = GetTickCount();
     dt = current - lastUpdate;
     
-    if (dt > 0)
-    {
-      draw(cr, x, y);
-      XCopyArea(dpy, map, root, gc, 0, 0, wa.width, wa.height, 0, 0);
-      XFlush(dpy);
-      
-      update(&x, &y, &dx, &dy, (float)dt/1000, wa.width, wa.height);
-      
-      lastUpdate = current;
-    }
+    draw(cr, x, y);
+    XCopyArea(dpy, map, root, gc, 0, 0, wa.width, wa.height, 0, 0);
+    XFlush(dpy);
     
-    usleep(5000 - dt);
+    update(&x, &y, &dx, &dy, (float) dt / 1000, wa.width, wa.height);
+    
+    lastUpdate = current;
+
+    usleep(5000);
   }
   
   cairo_destroy(cr);
