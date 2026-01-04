@@ -1,8 +1,8 @@
 
-CC = gcc
-CFLAGS = -Wall
-CLIBS = -lX11 -lm -lcairo
-PROGRAM := ball
+CC := gcc
+CFLAGS := -Wall
+CLIBS := -lX11 -lm -lcairo
+PROGRAM := demo
 
 default: $(PROGRAM)
 
