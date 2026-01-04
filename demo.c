@@ -5,8 +5,8 @@
   La quasi totalité du code est empruntée à lavanet.c de Robert Zenz :
     https://github.com/RobertZenz/xscreensavers
   
-  J'ai seulement remplacé les dessins originaux, par une image dessinée avec la
-  bibliothèque Cairo (pour le moment une balle rebondissante, parce que je
+  J'ai seulement remplacé l'animation originale, par une animation dessinée avec
+  la bibliothèque Cairo (pour le moment une balle rebondissante, parce que je
   n'avais pas d'autre idée).
 */
 
@@ -128,8 +128,7 @@ int main(int argc, char *argv[])
   float dy = (float) seconds() + 160.0;
   
   int lastUpdate = GetTickCount();
-  int current;
-  float dt;
+  int current, dt;
 
   while (TRUE) {
     XEvent event;
@@ -158,19 +157,20 @@ int main(int argc, char *argv[])
     }
 
     current = GetTickCount();
-    dt = (float) (current - lastUpdate) / 1000.0;
-    //if (dt > 0.008)
+    dt = current - lastUpdate;
+    
+    if (dt > 0)
     {
       draw(cr, x, y);
       XCopyArea(dpy, map, root, gc, 0, 0, wa.width, wa.height, 0, 0);
       XFlush(dpy);
       
-      update(&x, &y, &dx, &dy, dt, wa.width, wa.height);
+      update(&x, &y, &dx, &dy, (float)dt/1000, wa.width, wa.height);
       
       lastUpdate = current;
     }
     
-    usleep(16000 - (int)(1000 * dt));
+    usleep(5000 - dt);
   }
   
   cairo_destroy(cr);
